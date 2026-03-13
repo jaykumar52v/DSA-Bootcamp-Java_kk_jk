@@ -384,7 +384,37 @@ li.prepend(checkbox)
 
 })
 
-/* progress */
+/* ---------- LOAD SAVED STATE ---------- */
+
+function loadProgress(){
+
+let boxes = document.querySelectorAll("#content input[type=checkbox]");
+let saved = JSON.parse(localStorage.getItem("dsa-progress")) || {};
+
+boxes.forEach((box,i)=>{
+if(saved[i]){
+box.checked = true;
+}
+});
+
+}
+
+/* ---------- SAVE STATE ---------- */
+
+function saveProgress(){
+
+let boxes = document.querySelectorAll("#content input[type=checkbox]");
+let data = {};
+
+boxes.forEach((box,i)=>{
+data[i] = box.checked;
+});
+
+localStorage.setItem("dsa-progress", JSON.stringify(data));
+
+}
+
+/* ---------- UPDATE PROGRESS ---------- */
 
 const circle = document.getElementById("circle");
 const percentText = document.getElementById("percent");
@@ -394,34 +424,43 @@ function updateProgress(){
 let boxes = document.querySelectorAll("#content input[type=checkbox]");
 
 let total = boxes.length;
-let checked = 0;
+let done = 0;
 
-boxes.forEach(box=>{
-if(box.checked) checked++;
+boxes.forEach(b=>{
+if(b.checked) done++;
 });
 
-let percent = total ? (checked/total)*100 : 0;
-let degrees = percent * 3.6;
+let percent = total ? (done/total)*100 : 0;
+let deg = percent*3.6;
 
 circle.style.background =
-`conic-gradient(#30d158 ${degrees}deg, #2c2c2e ${degrees}deg)`;
+`conic-gradient(#30d158 ${deg}deg,#2c2c2e ${deg}deg)`;
 
-percentText.innerText = Math.round(percent) + "%";
+percentText.innerText = Math.round(percent)+"%";
 
 }
 
-document.addEventListener("change", function(e){
+/* ---------- EVENT LISTENER ---------- */
 
-if(e.target.type === "checkbox"){
+document.addEventListener("change",function(e){
+
+if(e.target.type==="checkbox"){
+
+saveProgress();
 updateProgress();
-highlightNext();
+
 }
 
 });
 
+/* ---------- INITIAL LOAD ---------- */
+
+window.addEventListener("DOMContentLoaded",function(){
+
+loadProgress();
 updateProgress();
 
-/* next topic */
+});
 
 function highlightNext(){
 
