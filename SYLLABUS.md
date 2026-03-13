@@ -386,26 +386,40 @@ li.prepend(checkbox)
 
 /* progress */
 
+const circle = document.getElementById("circle");
+const percentText = document.getElementById("percent");
+
 function updateProgress(){
 
-let boxes=document.querySelectorAll("input[type=checkbox]")
+let boxes = document.querySelectorAll("#content input[type=checkbox]");
 
-let total=boxes.length
-let done=0
+let total = boxes.length;
+let checked = 0;
 
-boxes.forEach(b=>{
-if(b.checked) done++
-})
+boxes.forEach(box=>{
+if(box.checked) checked++;
+});
 
-let percent=(done/total)*100
-let deg=percent*3.6
+let percent = total ? (checked/total)*100 : 0;
+let degrees = percent * 3.6;
 
-circle.style.background=
-`conic-gradient(#30d158 ${deg}deg,#2c2c2e ${deg}deg)`
+circle.style.background =
+`conic-gradient(#30d158 ${degrees}deg, #2c2c2e ${degrees}deg)`;
 
-percentText.innerText=Math.round(percent)+"%"
+percentText.innerText = Math.round(percent) + "%";
 
 }
+
+document.addEventListener("change", function(e){
+
+if(e.target.type === "checkbox"){
+updateProgress();
+highlightNext();
+}
+
+});
+
+updateProgress();
 
 /* next topic */
 
